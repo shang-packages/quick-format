@@ -1,6 +1,20 @@
 var safeStringify = require('fast-safe-stringify')
-function tryStringify (o) {
-  try { return JSON.stringify(o) } catch(e) { return '"[Circular]"' }
+function tryStringify(o) {
+  if (o instanceof Error) {
+    var str = '';
+    if (Object.keys(o).length) {
+      str += 'Error extra info: ' + tryStringify(Object.keys(o).reduce(function (result, key) {
+          result[key] = o[key];
+          return result;
+        }, { message: o.message })) + '\n';
+    }
+    return str + o.stack;
+  }
+  try {
+    return JSON.stringify(o)
+  } catch (e) {
+    return '"[Circular]"'
+  }
 }
 module.exports = function format(args, opts) {
   var ss = (opts && opts.lowres) ? tryStringify : safeStringify

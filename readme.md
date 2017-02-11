@@ -2,6 +2,8 @@
 
 Solves a problem with util.format
 
+## clone to add Error format
+
 ## usage
 
 ```js
